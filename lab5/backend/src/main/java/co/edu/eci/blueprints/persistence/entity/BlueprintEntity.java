@@ -22,7 +22,9 @@ public class BlueprintEntity {
     @Column(nullable = false)
     private String name;
 
+    // @OrderBy: la polilinea depende del orden de insercion, no del orden que devuelva Postgres
     @OneToMany(mappedBy = "blueprint", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OrderBy("id ASC")
     private List<PointEntity> points = new ArrayList<>();
 
     public BlueprintEntity() { }

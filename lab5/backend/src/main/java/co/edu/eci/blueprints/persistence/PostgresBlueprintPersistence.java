@@ -59,6 +59,7 @@ public class PostgresBlueprintPersistence implements BlueprintPersistence {
     }
 
     @Override
+    @Transactional
     public void addPoint(String author, String name, int x, int y) throws BlueprintNotFoundException {
         BlueprintEntity entity = repo.findByAuthorAndName(author, name)
                 .orElseThrow(() -> new BlueprintNotFoundException(
