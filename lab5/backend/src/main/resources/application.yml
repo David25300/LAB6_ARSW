@@ -29,7 +29,23 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    co.edu.eci.blueprints.realtime: DEBUG
+
 blueprints:
   security:
     issuer: "https://decsis-eci/blueprints"
     token-ttl-seconds: 3600
+  cors:
+    allowed-origin-patterns:
+      - "http://localhost:*"

@@ -7,6 +7,7 @@ import co.edu.eci.blueprints.persistence.BlueprintNotFoundException;
 import co.edu.eci.blueprints.persistence.BlueprintPersistence;
 import co.edu.eci.blueprints.persistence.BlueprintPersistenceException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -40,6 +41,12 @@ public class BlueprintsServices {
 
     public void addPoint(String author, String name, int x, int y) throws BlueprintNotFoundException {
         persistence.addPoint(author, name, x, y);
+    }
+
+    @Transactional(rollbackFor = BlueprintNotFoundException.class)
+    public Blueprint addPointAndGet(String author, String name, Point point) throws BlueprintNotFoundException {
+        persistence.addPoint(author, name, point.x(), point.y());
+        return getBlueprint(author, name);
     }
 
     public void updateBlueprint(String author, String name, List<Point> points) throws BlueprintNotFoundException {
