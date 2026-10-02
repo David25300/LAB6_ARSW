@@ -1,6 +1,6 @@
 # Lab 6 — BluePrints en Tiempo Real (STOMP y Socket.IO)
 
-Front en React + Vite que integra el CRUD de planos (REST con JWT) y la colaboración en vivo: dos o más pestañas dibujan sobre el mismo plano y ven los puntos de las demás casi al instante. El enunciado original del profesor está en [ENUNCIADO.md](./ENUNCIADO.md).
+Front en React + Vite que integra el CRUD de planos (REST con JWT) y la colaboración en vivo: dos o más pestañas dibujan sobre el mismo plano y ven los puntos de las demás casi al instante. El enunciado original está en [ENUNCIADO.md](./ENUNCIADO.md).
 
 - **Tiempo real principal: STOMP**, sobre el mismo backend Spring Boot del CRUD ([`lab5/backend`](./lab5/backend)).
 - **Socket.IO** también está disponible en el selector y usa el [backend guía de Node](https://github.com/DECSIS-ECI/example-backend-socketio-node-).
