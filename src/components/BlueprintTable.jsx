@@ -1,45 +1,64 @@
-/** Total de puntos de una lista de planos (README: "total de puntos (reduce)"). */
-export const totalPoints = (items) => items.reduce((acc, bp) => acc + (bp.points?.length ?? 0), 0)
+import { LoadStatus } from '../hooks/useAuthorBlueprints.js'
+import { totalPoints } from '../lib/blueprints.js'
 
-const th = { textAlign: 'left', padding: '6px 8px', borderBottom: '1px solid #ccc' }
-const td = { padding: '6px 8px', borderBottom: '1px solid #eee' }
-
-/**
- * Panel del autor: tabla de planos (nombre, numero de puntos, boton Open) y total de puntos.
- * status: 'idle' | 'loading' | 'failed'
- */
-export default function BlueprintTable({ author, items, status, error, currentName, onOpen, onRetry }) {
+function EmptyState({ author }) {
   return (
-    <div>
-      <h3 style={{ margin: '8px 0' }}>{author ? `Planos de ${author}` : 'Planos'}</h3>
+    <p className="muted">
+      {author ? 'Este autor no tiene planos todavía.' : 'Escribe un autor y pulsa Get blueprints.'}
+    </p>
+  )
+}
 
-      {status === 'failed' && (
-        <p style={{ color: '#b91c1c', margin: '4px 0' }}>
-          ⚠ No se pudieron cargar los planos: {error}{' '}
-          <button type="button" onClick={onRetry}>Reintentar</button>
+export default function BlueprintTable({
+  author,
+  items,
+  status,
+  error,
+  currentName,
+  onOpen,
+  onRetry,
+}) {
+  return (
+    <section className="card" aria-labelledby="blueprints-title">
+      <h2 id="blueprints-title">{author ? `Planos de ${author}` : 'Planos'}</h2>
+
+      {status === LoadStatus.FAILED && (
+        <p role="alert" className="feedback feedback--error">
+          No se pudieron cargar los planos: {error}{' '}
+          <button type="button" className="button button--link" onClick={onRetry}>
+            Reintentar
+          </button>
         </p>
       )}
-      {status === 'loading' && <p style={{ opacity: 0.7 }}>Cargando planos...</p>}
-      {status === 'idle' && !items.length && (
-        <p style={{ opacity: 0.7 }}>{author ? 'Este autor no tiene planos.' : 'Escribe un autor y pulsa Get blueprints.'}</p>
-      )}
+      {status === LoadStatus.LOADING && <p className="muted">Cargando planos…</p>}
+      {status === LoadStatus.IDLE && items.length === 0 && <EmptyState author={author} />}
 
-      {!!items.length && (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      {items.length > 0 && (
+        <table className="table">
           <thead>
             <tr>
-              <th style={th}>Blueprint name</th>
-              <th style={{ ...th, textAlign: 'right' }}>Number of points</th>
-              <th style={th} />
+              <th scope="col">Blueprint name</th>
+              <th scope="col" className="table__number">
+                Number of points
+              </th>
+              <th scope="col">
+                <span className="visually-hidden">Acciones</span>
+              </th>
             </tr>
           </thead>
           <tbody>
-            {items.map((bp) => (
-              <tr key={bp.name} style={bp.name === currentName ? { background: '#eff6ff' } : undefined}>
-                <td style={td}>{bp.name}</td>
-                <td style={{ ...td, textAlign: 'right' }}>{bp.points?.length ?? 0}</td>
-                <td style={{ ...td, textAlign: 'right' }}>
-                  <button type="button" onClick={() => onOpen(bp.name)}>Open</button>
+            {items.map(({ name, points }) => (
+              <tr key={name} className={name === currentName ? 'table__row--current' : undefined}>
+                <td>{name}</td>
+                <td className="table__number">{points?.length ?? 0}</td>
+                <td className="table__number">
+                  <button
+                    type="button"
+                    className="button button--small"
+                    onClick={() => onOpen(name)}
+                  >
+                    Open
+                  </button>
                 </td>
               </tr>
             ))}
@@ -47,7 +66,9 @@ export default function BlueprintTable({ author, items, status, error, currentNa
         </table>
       )}
 
-      <p style={{ fontWeight: 700, marginTop: 10 }}>Total user points: {totalPoints(items)}</p>
-    </div>
+      <p className="total">
+        Total user points: <output aria-label="Total de puntos">{totalPoints(items)}</output>
+      </p>
+    </section>
   )
 }

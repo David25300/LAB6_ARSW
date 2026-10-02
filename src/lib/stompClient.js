@@ -1,20 +1,21 @@
 import { Client } from '@stomp/stompjs'
-// import SockJS from 'sockjs-client' // si quieres fallback
 
-export function createStompClient(baseUrl) {
-  const client = new Client({
-    brokerURL: `${baseUrl.replace(/\/$/,'')}/ws-blueprints`,
-    // webSocketFactory: () => new SockJS(`${baseUrl}/ws-blueprints`),
+const toWebSocketUrl = (baseUrl) => baseUrl.replace(/^http/, 'ws')
+
+export const blueprintTopic = (author, name) => `/topic/blueprints.${author}.${name}`
+
+export function createStompClient(baseUrl, token) {
+  return new Client({
+    brokerURL: `${toWebSocketUrl(baseUrl)}/ws-blueprints`,
+    connectHeaders: token ? { Authorization: `Bearer ${token}` } : {},
     reconnectDelay: 1000,
     heartbeatIncoming: 10000,
     heartbeatOutgoing: 10000,
-    onStompError: (f) => console.error('STOMP error', f.headers['message']),
   })
-  return client
 }
 
-export function subscribeBlueprint(client, author, name, onMsg) {
-  return client.subscribe(`/topic/blueprints.${author}.${name}`, (m) => {
-    onMsg(JSON.parse(m.body))
-  })
+export function subscribeBlueprint(client, author, name, onMessage) {
+  return client.subscribe(blueprintTopic(author, name), (message) =>
+    onMessage(JSON.parse(message.body)),
+  )
 }
