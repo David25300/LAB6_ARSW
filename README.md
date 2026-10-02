@@ -6,6 +6,10 @@ Front en React + Vite que integra el CRUD de planos (REST con JWT) y la colabora
 - **Socket.IO** también está disponible en el selector y usa el [backend guía de Node](https://github.com/DECSIS-ECI/example-backend-socketio-node-).
 - **None** deja el front sin tiempo real (solo CRUD).
 
+## Video
+
+[Video demo (1:29)](./docs/Video_demo_lab_6_ARSW.mp4): dos ventanas abiertas sobre el mismo plano con STOMP, los puntos dibujados en una aparecen en la otra, y las operaciones Create, Save/Update y Delete actualizan la tabla y el total del autor.
+
 ## Arquitectura
 
 ```
@@ -175,6 +179,7 @@ El workflow [`ci.yml`](./.github/workflows/ci.yml) corre ambas suites en cada pu
 ├─ tests/                # Vitest
 ├─ lab5/                 # copia del Lab 5
 │  └─ backend/           # Spring Boot: CRUD + JWT + STOMP (realtime/, services/, security/)
+├─ docs/                 # video demo
 ├─ .github/workflows/    # CI
 └─ ENUNCIADO.md          # enunciado original
 ```
